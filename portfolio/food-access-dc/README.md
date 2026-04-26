@@ -5,3 +5,5 @@ portfolio/
   ├── brfss-analysis/
         ├── README.md
         ├── files...
+
+![Food Access Map](map_screenshot.png)
