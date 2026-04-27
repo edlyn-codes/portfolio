@@ -1,0 +1,440 @@
+---
+title: 'DTSC 650: Data Analytics In R'
+subtitle: 'CodeGrade Final Project Part 2'
+output: html_notebook
+editor_options:
+  chunk_output_type: inline
+---
+
+## Student Info
+
+```         
+Name: Edlyn Profic
+Term: Spring 1
+Date: 02/10/24
+```
+
+------------------------------------------------------------------------
+
+## General Instructions
+
+------------------------------------------------------------------------
+
+### Name of File
+
+Name your assignment file **`BRFSS_Part2`**. This is a quarto "markdown" file, which has the extension ".qmd".
+
+------------------------------------------------------------------------
+
+### Instructions
+
+For the final section, you will choose four variables to explore in ways we have not in Q1-Q9. You will choose one of those four variables as the response variable and the other three as predictors. Be sure to read through all of the instructions for Q10-Q14 before choosing your 4 variables. 
+
+We expect that you will choose 4 *different* variables than those covered in Part 1, Q1-9.
+
+Feel free to create multiple variables for Q12, Q13, and Q14, e.g. Q12a, Q12b, etc. Please make it clear, though, the distinction between each question/problem with comments, spacing, and new code chunks. If you use Q12a, b, etc., be sure to print the results by doing Q12a or print(Q12a). Your answers must be clearly identifiable. 
+
+Take time to tidy your code once you are finished. The easier it is for us to understand, the more partial credit you could receive.
+
+------------------------------------------------------------------------
+
+### Allowable packages
+
+Allowable packages are `tidyverse`, `caret`, `Hmisc`, `lsr`, `olsrr`, `psych`, `lm.beta`.
+
+-   If the allowable packages are not installed on your local computer, you'll need to do a one-time installation *from the Console Window in RStudio* for each package like this:
+
+    **`install.packages('<package name>')`**
+    
+    *Do not attempt to install packages in code that you submit to CodeGrade.*
+
+-   Note: installing the entire tidyverse with `install.packages('tidyverse')` from the Console Window will save you from having to install any of the tidyverse's individual packages in the future.
+
+-   In your code, load the package's library like this: **`library(<library name>)`**
+
+------------------------------------------------------------------------
+
+### Do / Do not
+
+-   Do use tidyverse functions (e.g., dplyr verbs) for all of the questions where possible.
+
+-   Do use The Pipe.
+
+-   Do use plenty of comments throughout your code chunks so that the grader can follow your line of thinking.
+
+-   Do use the "Q Discussion:" sections provided to explain your thinking and to answer the questions.
+
+-   Do not rearrange data frame outputs unless specified by the question instructions.
+
+-   Do not create multiple copies of the BRFSS dataset in your script. Creating too many copies of the dataset can cause CodeGrade to crash with *exit code -9*. If you see that error on your Practice Submission, please check for this.
+
+-   Do have integrity and submit your own work, not the work of a classmate, an online resource, or someone else.
+
+------------------------------------------------------------------------
+
+### Submission
+
+You only have ONE ATTEMPT to submit Part 2 to the ACTUAL submission link! On all the other assignments, you got multiple attempts; but not on this assignment. 
+
+Ensure you are ready and confident in your work before submitting.
+
+------------------------------------------------------------------------
+
+
+### Data Set
+
+-   These data come from [Kaggle](https://www.kaggle.com/cdc/behavioral-risk-factor-surveillance-system).
+
+-   To answer these questions you will need to use the codebook on Brightspace, called `codebook15_llcp.pdf`. Please note that not all of the variables listed in the codebook are included in the .csv file to be downloaded from Brightspace.
+
+-   Download the `BRFSS2015_650.csv` file from Brightspace and place it in the same folder/directory as your script file. Then in RStudio, set your Working Directory to your Source File location: in the menus choose Session, Set Working Directory, To Source File Location. You most likely will see some warnings after it loads due to the fact that `read_csv()` will try to guess the column type but because there are so many rows it won't read enough of them to accurately make a guess.
+
+-   You must use the `read_csv()` function when loading the .csv file. Do not use `read.csv()`.
+
+-   Do not rename the .csv file that you download from Brightspace.
+
+-   Do not edit the .csv file.
+
+------------------------------------------------------------------------
+
+### Pipe Notation
+
+You may use the `tidyverse` pipe **`%>%`** or the new base R pipe **`|>`**. For a comparison, see [here](https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe/).
+
+You are expected to use pipe notation in all of the CodeGrade assignments. Although there are alternate ways to filter, subset, and summarize data sets, using the pipe creates more readable code and is an important skill to develop.
+
+------------------------------------------------------------------------
+
+### Comments vs. Discussion
+
+You should include both comments within your code chunk as well a discussion after each coded answer. Comments explain your code and your thought process; the discussion uses your code to answer the questions we've asked. We have provided "Q Discussion" sections for each question. Feel free to add more lines in the discussion section. 
+
+You can also use markdown headers to organize your discussion and the outline. For more info on markdown, see [here](https://rmarkdown.rstudio.com/authoring_basics.html)
+
+
+------------------------------------------------------------------------
+
+## Questions and Coded Solutions
+
+------------------------------------------------------------------------
+
+### Preliminaries
+
+```{r}
+### It's always a good idea when working in RStudio to start with a clean environment. 
+
+### Clear objects from the environment memory that may be leftover from previous versions of your code or other assignments by running the following line:
+rm(list = ls())
+
+### Load the libraries you need
+
+library(tidyverse) 
+library(lm.beta)
+library(Hmisc)
+
+
+
+
+
+### Load the Data
+### Load the data file
+### Do not change this line
+brf <- read_csv("BRFSS2015_650.csv")
+
+```
+
+------------------------------------------------------------------------
+
+## Questions
+
+------------------------------------------------------------------------
+
+### Q10
+
+Address the values of each of the variables Update the dataset to account for these values for the remainder of the questions in this part.
+
+```{r}
+
+### TYPE YOUR CODE BELOW ###
+Q10 <- brf |>
+  select(POORHLTH, MAXDRNKS, SMOKE100, PERSDOC2)
+
+Q10 <- Q10 |>
+  select(POORHLTH, MAXDRNKS, SMOKE100, PERSDOC2) |>
+ mutate(POORHLTH = case_when(
+  POORHLTH == 88 ~ 0,
+  TRUE ~ POORHLTH)
+  ) |>
+  mutate(SMOKE100 = ifelse(SMOKE100 == '1', #assigning levels
+          1, 0)) |>
+  mutate(PERSDOC2 = ifelse(PERSDOC2 == '1', #assigning levels
+          1, 0)) |>
+    as.data.frame()
+  
+
+#I created a dataframe with my selected variables and assigned values then assigned this to Q10
+```
+
+
+The variables POORHLTH, MAXDRNKS, SMOKE100 are utilized to predict the outcome variable PERSDOC2. 
+
+For POORHLTH, a quantitative variable, we are looking at how many days over the past 30 days respondents reported poor physical or mental health keeping them from doing their usual daily activities. Values 1-30 are counted as number of days. Value '77' which in the Codebook is labeled as 'Don't know/Not sure' will not be counted. Value '88' will be equal to 0. Those who refused, value '99', will be omitted. Frequency of values 1-30: 96,094. 
+
+For MAXDRNKS, another quantitative variable, respondents were asked what was the largest number of alcoholic beverages they had on any occasion during the past 30 days. Values 1-76 are number of drinks with no value changes, while value '77' labeled as 'Don't Know/Not sure' and those that refused (labeled '99') will be omitted.
+
+SMOKE100 is a categorical predictor variable where respondents were asked if they have smoked 100 cigarettes over the course of their life. Value '1' is labeled 'Yes' and assigned to group 1. Value '2' is labeled 'No' and assigned to group 0. Value '7' labeled as Don't Know/Unsure will be labeled as NA as well as value '9' which were refusals. 
+
+For the chosen outcome variable, PERSDOC2, the categorical variable records whether or not respondents have a primary care health provider. Having a primary care provider or not. We are predicting this outcome based on the inputs of the predictor variables POORHLTH, MAXDRINKS, PHYSHLTH. Values '1' and '2' are both equal to 'Yes' and labeled group 1. Value '3' is 'No' and is labeled group 0. Values '7' and '9' will be ommitted as they are non- answers/refusal. This variable will be predicted, meaning predicting whether or not a person has a primary care healthcare provider based on the information/input of the predictor variables.
+
+
+### Q11
+
+Remove any outliers for each applicable variable. Make sure you are updating the dataset from Q10 and using this dataset for the remainder. 
+
+```{r}
+### Do not edit the following line. It is used by CodeGrade.
+# CG Q11 # 
+
+### TYPE YOUR CODE BELOW ###
+##Evaluating outliers for POORHLTH
+Q11 <- Q10
+
+length(Q11$POORHLTH) 
+#observing length of POORHLTH variable:                               441,456
+
+#1.5(IQR) method
+upper_lvl <- quantile(Q11$POORHLTH, 0.75, na.rm = TRUE) + (1.5 * IQR(Q11$POORHLTH, na.rm = TRUE)) #setting upper level/fence to                   remove values above this value
+
+lower_lvl <- quantile(Q11$POORHLTH, 0.25, na.rm = TRUE) - (1.5 * IQR(Q11$POORHLTH, na.rm = TRUE)) 
+#setting lower level/fence to remove values below this value 
+
+#ph_iqr <- Q11 |>
+  #select(POORHLTH) |>
+  #filter(POORHLTH >= upper_lvl,
+         #POORHLTH <= lower_lvl)
+
+## 1.5(IQR) rule was not appropriate for POORHLTH variable
+
+  #observing new observation number after removing outliers; since more than 20%, will try 3SD rule
+
+# using 3SD rule 
+lower_bound <- quantile(Q11$POORHLTH, 0.0015, na.rm = TRUE)
+upper_bound <- quantile(Q11$POORHLTH, 0.9985, na.rm = TRUE)
+
+Q11 <- Q11 |>
+  select(POORHLTH, MAXDRNKS, SMOKE100, PERSDOC2) |>
+  filter(
+    POORHLTH >= lower_bound,
+    POORHLTH <= upper_bound
+  )
+#POORHLTH after using 3SD rule  
+
+#observing length after removing POORHLTH outliers
+ph_out <- Q11 |>
+select(POORHLTH) |>
+nrow()
+
+##Evaluating outliers for MAXDRINKS 
+
+length(Q11$MAXDRNKS) #441,456 observations                            for variable MAXDRINKS
+## using 3SD rule 
+
+lower <- quantile(Q11$MAXDRNKS, 0.0015, na.rm = TRUE)
+
+upper <- quantile(Q11$MAXDRNKS, 0.9985, na.rm = TRUE)
+
+
+#using 1.5(IQR) rule
+upper_fence <- quantile(Q11$MAXDRNKS, 0.75, na.rm = TRUE) + (1.5 * IQR(Q11$MAXDRNKS, na.rm = TRUE))
+
+lower_fence <- quantile(Q11$MAXDRNKS, 0.25, na.rm = TRUE) - (1.5 * IQR(Q11$MAXDRNKS, na.rm = TRUE))
+
+Q11 <- Q11 |>
+  select(POORHLTH, MAXDRNKS, SMOKE100, PERSDOC2) |>
+  filter(
+    MAXDRNKS >= lower_fence,
+    MAXDRNKS <= upper_fence
+  )
+
+length(Q11$MAXDRNKS)
+#
+#saved new dataframe after removing to Q11 
+```
+
+
+I did not check for outliers for the variable PERSDOC2 as is not applicable as a categorical variable with only two options/groups of 0 or 1. This is the same reasoning for variable SMOKE100. For the quantitative predictor variables of POORHLTH, MAXDRINKS, and PHYSHLTH I tested out both the 1.5(IQR) and 3SD rule. I then evaluated which method was most appropriate by evaluating how many observations were removed. For example, for the POORHLTH variable, over a quarter of values were removed using the 1.5IQR method. Because the 3SD rule is more resistant to outliers, this is the method used to prevent removing too many values. For MAXDRNKS I used the 1.5IQR as this variable is valued on the lower end so I needed more resistance to extreme/higher values.  
+
+
+
+
+Exploratory analyses (for each variable) doing appropriate visualizations with ggplot2. Include visualizations that incorporate a combination of your variables within one plot. 
+
+```{r}
+### Do not edit the following line. It is used by CodeGrade.
+# CG Q12 # 
+
+### TYPE YOUR CODE BELOW ###
+
+
+## POORHLTH ##
+Q12a_poor <- Q11 |>
+  ggplot(aes(x = POORHLTH)) +
+  geom_boxplot()
+
+Q12b_poor <- Q11 |>
+  ggplot(aes(x = POORHLTH)) +
+  geom_histogram()
+
+Q12c_poor <- Q11 |>
+  ggplot(aes(x = POORHLTH, y = PERSDOC2)) + 
+  geom_point()
+
+## MAXDRINKS ##
+Q12d_max <- Q11 |>
+  ggplot(aes(x = MAXDRNKS)) +
+  geom_boxplot()
+
+Q12e_max <- Q11 |>
+  ggplot(aes(x = MAXDRNKS)) +
+  geom_histogram(colour = 4, fill = "gray", 
+                 binwidth = 0.5)
+
+## SMOKE100 ##
+
+Q12g_smoke <- Q11 |>
+  ggplot(aes(x = PERSDOC2)) +
+  geom_bar()
+
+Q12h_smoke <- Q11 |>
+  ggplot(aes(x = MAXDRNKS)) +
+  geom_histogram()
+
+## PERSDOC2 ##
+
+Q12i_hist <- Q11 |>
+  ggplot(aes(x = PERSDOC2)) +
+  geom_histogram(colour = 4, fill = "blue", 
+                 binwidth = 0.5)
+
+
+#Q12 <- #make plot with all the variables 
+
+
+
+```
+
+
+For SMOKE100, Bar plot and histogram were used for visualizing distribution and frequency.
+
+For PERSDOC2, I utilized a box plot visualizations using ggplot2 as these are good for categorical variables. This provided a visualization for difference in amount between those with and without a primary healthcare provider. 
+
+### Q13
+
+Run all of the appropriate basic descriptive statistics for each of your variables.  What do these statistics reveal? 
+
+```{r}
+### Do not edit the following line. It is used by CodeGrade.
+# CG Q13 # 
+
+### TYPE YOUR CODE BELOW ###
+
+#run summary for 5 number sum plus mean
+#var
+
+## POORHLTH 
+
+Q13a <- Q11 |>
+  select(POORHLTH) |>
+  summary() |>
+  as.data.frame()
+
+var_poor <- Q11 |>
+  select(POORHLTH) |>
+  var()
+
+## MAXDRINKS
+
+Q13b <- Q11 |>
+  select(MAXDRNKS) |>
+  summary() |>
+  as.data.frame()
+
+var_drnks <- Q11 |>
+  select(MAXDRNKS) |>
+  var()
+
+
+## SMOKE100
+
+Q13c <- Q11 |>
+  select(SMOKE100) |>
+  summary() |>
+  as.data.frame()
+
+smoke_mode <- Q11 |>
+  select(SMOKE100) |>
+  mode() |>
+  as.data.frame()
+
+
+## PERSDOC2
+
+Q13d <- Q11 |>
+  select(PERSDOC2) |>
+  summary() |>
+  as.data.frame()
+
+Q13e <- Q11 |>
+  select(PERSDOC2) |>
+  mode() |>
+  as.data.frame()
+
+
+
+
+```
+
+
+
+"Summary()" gives us a five number summary which includes the first quartile, median, third quartile, and the maximum as well as the mean, which provides the average of the values. These values help evaluate and analyze the spread of data. I also used var() in order to evaluate the variance among the variables MAXDRNKS and POORHLTH to provide more information that will provide context when looking at relationships and correlation. I also evaluated the mode to compare amounts of those that do vs do not have a primary care providor and those that have or have not smoked 100 packs in their lifetime.    
+
+
+
+
+```{r}
+### Do not edit the following line. It is used by CodeGrade.
+# CG Q14 # 
+
+### TYPE YOUR CODE BELOW ###
+
+## Regression predicting PERSDOC2 from POORHLTH and SMOKE100
+
+Q14_modela <- Q11 |>
+  select(PERSDOC2, POORHLTH, SMOKE100)
+  
+Q14a <- glm(PERSDOC2 ~ POORHLTH + SMOKE100, binomial(), Q14_modela)
+
+modela_summary <- summary(Q14a)
+
+## Regression and summary with all three predictor variables 
+Q14_modelb <- Q11 |>
+  select(PERSDOC2, MAXDRNKS, POORHLTH, SMOKE100) 
+  
+Q14b <- glm(PERSDOC2 ~ MAXDRNKS + POORHLTH + SMOKE100, binomial(), Q14_modelb) 
+
+modelb_summary <- summary(Q14b)
+
+
+
+Q14 <- Q14b 
+
+```
+
+
+For the regressions in Q14a and b, I analyzed and compared the AIC values and logistic models for each. I evaluated coefficients as well in order to analyze significance. I assigned the second model to Q14 to identify this as the best model. This model had an AIC value of 100780, while Q14a evaluating POORHLTH and SMOKE100 had an AIC of 101806. 
+
+
+------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------
