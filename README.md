@@ -8,7 +8,7 @@ My work emphasizes clean analysis, thoughtful visualization, and accessible stor
 
 ## 👩‍💻 About Me
 
-I am an early-career data analyst with a strong interest in using data to support evidence-based decision-making in healthcare, public health, and environmental systems.
+I am an early-career data analyst with a strong interest in using data to support evidence-based decision-making in healthcare, public health, and environmental systems. I have a B.S. in Biological Sciences and M.S. in Data Science.
 
 I am especially interested in:
 - Translating complex datasets into clear narratives  
