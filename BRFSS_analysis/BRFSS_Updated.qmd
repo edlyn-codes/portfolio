@@ -10,73 +10,8 @@ editor_options:
 
 ```         
 Name: Edlyn Profic
-Term: Spring 1
-Date: 02/10/24
+
 ```
-
-------------------------------------------------------------------------
-
-## General Instructions
-
-------------------------------------------------------------------------
-
-### Name of File
-
-Name your assignment file **`BRFSS_Part2`**. This is a quarto "markdown" file, which has the extension ".qmd".
-
-------------------------------------------------------------------------
-
-### Instructions
-
-For the final section, you will choose four variables to explore in ways we have not in Q1-Q9. You will choose one of those four variables as the response variable and the other three as predictors. Be sure to read through all of the instructions for Q10-Q14 before choosing your 4 variables. 
-
-We expect that you will choose 4 *different* variables than those covered in Part 1, Q1-9.
-
-Feel free to create multiple variables for Q12, Q13, and Q14, e.g. Q12a, Q12b, etc. Please make it clear, though, the distinction between each question/problem with comments, spacing, and new code chunks. If you use Q12a, b, etc., be sure to print the results by doing Q12a or print(Q12a). Your answers must be clearly identifiable. 
-
-Take time to tidy your code once you are finished. The easier it is for us to understand, the more partial credit you could receive.
-
-------------------------------------------------------------------------
-
-### Allowable packages
-
-Allowable packages are `tidyverse`, `caret`, `Hmisc`, `lsr`, `olsrr`, `psych`, `lm.beta`.
-
--   If the allowable packages are not installed on your local computer, you'll need to do a one-time installation *from the Console Window in RStudio* for each package like this:
-
-    **`install.packages('<package name>')`**
-    
-    *Do not attempt to install packages in code that you submit to CodeGrade.*
-
--   Note: installing the entire tidyverse with `install.packages('tidyverse')` from the Console Window will save you from having to install any of the tidyverse's individual packages in the future.
-
--   In your code, load the package's library like this: **`library(<library name>)`**
-
-------------------------------------------------------------------------
-
-### Do / Do not
-
--   Do use tidyverse functions (e.g., dplyr verbs) for all of the questions where possible.
-
--   Do use The Pipe.
-
--   Do use plenty of comments throughout your code chunks so that the grader can follow your line of thinking.
-
--   Do use the "Q Discussion:" sections provided to explain your thinking and to answer the questions.
-
--   Do not rearrange data frame outputs unless specified by the question instructions.
-
--   Do not create multiple copies of the BRFSS dataset in your script. Creating too many copies of the dataset can cause CodeGrade to crash with *exit code -9*. If you see that error on your Practice Submission, please check for this.
-
--   Do have integrity and submit your own work, not the work of a classmate, an online resource, or someone else.
-
-------------------------------------------------------------------------
-
-### Submission
-
-You only have ONE ATTEMPT to submit Part 2 to the ACTUAL submission link! On all the other assignments, you got multiple attempts; but not on this assignment. 
-
-Ensure you are ready and confident in your work before submitting.
 
 ------------------------------------------------------------------------
 
@@ -85,31 +20,6 @@ Ensure you are ready and confident in your work before submitting.
 
 -   These data come from [Kaggle](https://www.kaggle.com/cdc/behavioral-risk-factor-surveillance-system).
 
--   To answer these questions you will need to use the codebook on Brightspace, called `codebook15_llcp.pdf`. Please note that not all of the variables listed in the codebook are included in the .csv file to be downloaded from Brightspace.
-
--   Download the `BRFSS2015_650.csv` file from Brightspace and place it in the same folder/directory as your script file. Then in RStudio, set your Working Directory to your Source File location: in the menus choose Session, Set Working Directory, To Source File Location. You most likely will see some warnings after it loads due to the fact that `read_csv()` will try to guess the column type but because there are so many rows it won't read enough of them to accurately make a guess.
-
--   You must use the `read_csv()` function when loading the .csv file. Do not use `read.csv()`.
-
--   Do not rename the .csv file that you download from Brightspace.
-
--   Do not edit the .csv file.
-
-------------------------------------------------------------------------
-
-### Pipe Notation
-
-You may use the `tidyverse` pipe **`%>%`** or the new base R pipe **`|>`**. For a comparison, see [here](https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe/).
-
-You are expected to use pipe notation in all of the CodeGrade assignments. Although there are alternate ways to filter, subset, and summarize data sets, using the pipe creates more readable code and is an important skill to develop.
-
-------------------------------------------------------------------------
-
-### Comments vs. Discussion
-
-You should include both comments within your code chunk as well a discussion after each coded answer. Comments explain your code and your thought process; the discussion uses your code to answer the questions we've asked. We have provided "Q Discussion" sections for each question. Feel free to add more lines in the discussion section. 
-
-You can also use markdown headers to organize your discussion and the outline. For more info on markdown, see [here](https://rmarkdown.rstudio.com/authoring_basics.html)
 
 
 ------------------------------------------------------------------------
@@ -155,7 +65,7 @@ Address the values of each of the variables Update the dataset to account for th
 
 ```{r}
 
-### TYPE YOUR CODE BELOW ###
+
 Q10 <- brf |>
   select(POORHLTH, MAXDRNKS, SMOKE100, PERSDOC2)
 
@@ -192,10 +102,8 @@ For the chosen outcome variable, PERSDOC2, the categorical variable records whet
 Remove any outliers for each applicable variable. Make sure you are updating the dataset from Q10 and using this dataset for the remainder. 
 
 ```{r}
-### Do not edit the following line. It is used by CodeGrade.
 # CG Q11 # 
 
-### TYPE YOUR CODE BELOW ###
 ##Evaluating outliers for POORHLTH
 Q11 <- Q10
 
