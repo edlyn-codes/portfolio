@@ -31,12 +31,7 @@ Name: Edlyn Profic
 ### Preliminaries
 
 ```{r}
-### It's always a good idea when working in RStudio to start with a clean environment. 
-
-### Clear objects from the environment memory that may be leftover from previous versions of your code or other assignments by running the following line:
-rm(list = ls())
-
-### Load the libraries you need
+### Load libraries
 
 library(tidyverse) 
 library(lm.beta)
@@ -45,8 +40,7 @@ library(Hmisc)
 
 
 
-
-### Load the Data
+### Load Data
 ### Load the data file
 ### Do not change this line
 brf <- read_csv("BRFSS2015_650.csv")
@@ -55,13 +49,26 @@ brf <- read_csv("BRFSS2015_650.csv")
 
 ------------------------------------------------------------------------
 
-## Questions
+## Objective
+
+This project analyzes hospital admission and patient outcome data to identify factors associated with readmission rates using regression modeling and exploratory data analysis.
+
+## Methods 
+
+- Data cleaning 
+- Missing value treatment 
+- Exploratory analysis
+- Linear regression 
+- Logistic regression 
+- Feature engineering 
+- Cross validation 
+- Visualization
 
 ------------------------------------------------------------------------
 
 ### Q10
 
-Address the values of each of the variables Update the dataset to account for these values for the remainder of the questions in this part.
+Address the values of each of the variables Update the dataset to account for these values.
 
 ```{r}
 
@@ -175,14 +182,9 @@ I did not check for outliers for the variable PERSDOC2 as is not applicable as a
 
 
 
-Exploratory analyses (for each variable) doing appropriate visualizations with ggplot2. Include visualizations that incorporate a combination of your variables within one plot. 
+## Exploratory analyses (for each variable) doing appropriate visualizations with ggplot2
 
 ```{r}
-### Do not edit the following line. It is used by CodeGrade.
-# CG Q12 # 
-
-### TYPE YOUR CODE BELOW ###
-
 
 ## POORHLTH ##
 Q12a_poor <- Q11 |>
@@ -225,9 +227,6 @@ Q12i_hist <- Q11 |>
                  binwidth = 0.5)
 
 
-#Q12 <- #make plot with all the variables 
-
-
 
 ```
 
@@ -236,15 +235,8 @@ For SMOKE100, Bar plot and histogram were used for visualizing distribution and 
 
 For PERSDOC2, I utilized a box plot visualizations using ggplot2 as these are good for categorical variables. This provided a visualization for difference in amount between those with and without a primary healthcare provider. 
 
-### Q13
-
-Run all of the appropriate basic descriptive statistics for each of your variables.  What do these statistics reveal? 
 
 ```{r}
-### Do not edit the following line. It is used by CodeGrade.
-# CG Q13 # 
-
-### TYPE YOUR CODE BELOW ###
 
 #run summary for 5 number sum plus mean
 #var
@@ -310,10 +302,6 @@ Q13e <- Q11 |>
 
 
 ```{r}
-### Do not edit the following line. It is used by CodeGrade.
-# CG Q14 # 
-
-### TYPE YOUR CODE BELOW ###
 
 ## Regression predicting PERSDOC2 from POORHLTH and SMOKE100
 
