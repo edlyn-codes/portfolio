@@ -73,11 +73,12 @@ Analysis of survey or behavioral datasets to understand human patterns and decis
 
 *This section will be updated as new projects are added.*
 
-### Project 1 — [Insert Title]
-Brief description of what it does and key insight.
+### Project 1 — [Hospital Readmission Analysis]
+Survey from past hospital patients answering questions on risk factors such as exercise frequency, alcohol consumption, smoking, etc. along with binary variable of Y/N hospital readmission. 
 
-### Project 2 — [Insert Title]
+### Project 2 — [Housing Prices Regression Project]
 Brief description of methods and takeaway.
+
 
 ---
 
@@ -94,7 +95,7 @@ I am currently building out additional projects to strengthen my portfolio, with
 ## 📬 Contact
 
 - Email: predlynn@gmail.com 
-- LinkedIn:  
+- Kaggle: EdlynP
 
 ---
 
