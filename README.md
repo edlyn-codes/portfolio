@@ -73,10 +73,10 @@ Analysis of survey or behavioral datasets to understand human patterns and decis
 
 *This section will be updated as new projects are added.*
 
-### Project 1 — [Hospital Readmission Analysis]
+### Project 1 — Hospital Readmission Analysis
 Survey from past hospital patients answering questions on risk factors such as exercise frequency, alcohol consumption, smoking, etc. along with binary variable of Y/N hospital readmission. 
 
-### Project 2 — [Student Performance Machine Learning Project]
+### Project 2 — Student Performance Machine Learning Project
 Explored and analyzed student data from a large Portuguese school system. Created and implemented a machine learning model to predict student performance based on select features such as travel time, family education history, family size, etc. This was then used to identify and aid students by incorporating proper intervention methods and strategies. 
 
 
