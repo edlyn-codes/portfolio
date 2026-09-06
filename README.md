@@ -73,7 +73,7 @@ Analysis of survey or behavioral datasets to understand human patterns and decis
 
 *This section will be updated as new projects are added.*
 
-### Project 1 — Hospital Readmission Analysis
+### Project 1 — Hospital Readmission Analysis (BRFSS)
 Survey from past hospital patients answering questions on risk factors such as exercise frequency, alcohol consumption, smoking, etc. along with binary variable of Y/N hospital readmission. 
 
 ### Project 2 — Student Performance Machine Learning Project
