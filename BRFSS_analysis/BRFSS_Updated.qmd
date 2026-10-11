@@ -1,7 +1,8 @@
 ---
-title: 'DTSC 650: Data Analytics In R'
-subtitle: 'CodeGrade Final Project Part 2'
-output: html_notebook
+title: 'Clinical Access Optimization: Predicting Primary Care Provider Placement'
+subtitle: 'An Operational Risk Stratification Framework Using BRFSS Behavioral Health Data'
+author: 'Edlyn | Healthcare Data Analyst' 
+date: "September 2026"
 editor_options:
   chunk_output_type: inline
 ---
