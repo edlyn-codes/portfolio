@@ -207,10 +207,16 @@ summary(linear_fit)
 ### 6.2 Healthcare Access: Logistic Risk Modeling for Primary Care Optimization
 To give healthcare managers a transparent, auditable decision mechanism, we execute a binary Logistic Regression. This models the probability of a patient establishing a primary care relationship based on acute physical health constraints (`POORHLTH`), regular tobacco exposure (`SMOKE100`), and alcohol consumption volume (`MAXDRNKS`).
 
-```{#r healthcare-access-logistic-model}
+```{r healthcare-access-logistic-model}
+# Execute binary logistic regression for clinical alignment mapping
 logistic_fit <- glm(PERSDOC2 ~ POORHLTH + MAXDRNKS + SMOKE100, 
-                    data = final_modeled_data,
+                    data = final_modeled_data, 
                     family = binomial)
+
+# Display standard regression summary statistics
+summary(logistic_fit)
+```
+
 
 
  
