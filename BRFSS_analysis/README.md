@@ -28,6 +28,14 @@ This project delivers an end-to-end data pipeline and predictive modeling framew
 *   **Methodology:** Deployed **Logistic Regression** for the binary classification of 30-day readmissions, and **Linear Regression** to analyze continuous operational metrics [e.g., length of stay, if applicable].
 *   **Clinical Interpretability:** Selected regression-based frameworks over complex "black-box" models to ensure full interpretability of feature weights (Odds Ratios). This allows hospital stakeholders to transparently audit exactly which risk factors (such as chronic comorbidities or demographic elements) are driving the risk scores.
 
+### 4. Feature Engineering & Clinical Data Rules 
+The model handles complex health survey coding from the BRFSS codebook by transforming raw categorical responses into actionable mathematical variables:
+
+*   **PERSDOC2 (Outcome Variable):** Classifies whether a patient has a primary care physician. Re-encoded into a binary target (`1` for Yes, `0` for No). Refusals (`7`, `9`) were cleanly omitted.
+*   **POORHLTH (Predictor):** Captures the number of poor physical/mental health days in the past month. Standardized by converting code `88` (None) to `0` days, mapping `1-30` directly, and purging non-responses.
+*   **MAXDRNKS (Predictor):** Quantifies heavy alcohol consumption (1-76 drinks). Removed statistical outliers using [Insert 1.5x IQR / 3SD here] to prevent extreme variances from breaking linearity assumptions.
+*   **SMOKE100 (Predictor):** Categorical factor tracking if a patient has smoked >100 cigarettes. Processed as a binary indicator (`1` = Yes, `0` = No) to capture behavioral risk.
+
 
 ---
 
