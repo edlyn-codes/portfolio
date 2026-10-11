@@ -209,4 +209,8 @@ To give healthcare managers a transparent, auditable decision mechanism, we exec
 
 ```{#r healthcare-access-logistic-model}
 logistic_fit <- glm(PERSDOC2 ~ POORHLTH + MAXDRNKS + SMOKE100, 
-                    data = final_modeled_data, 
+                    data = final_modeled_data,
+                    family = binomial)
+
+
+ 
