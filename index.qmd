@@ -1,0 +1,216 @@
+---
+title: "🏥 Clinical Access Optimization & Behavioral Health Analytics"
+subtitle: "An Operational Risk Stratification Study Utilizing BRFSS Healthcare Microdata"
+author: "Edlyn | Healthcare Data Analyst"
+date: "October 2026"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    code-fold: true
+    code-summary: "Show R Code Pipeline"
+    embed-resources: true
+execute:
+  warning: false
+  message: false
+---
+
+## 1. Executive Context & System Objectives
+In healthcare management and provider operations, matching patients with dedicated primary care infrastructure is crucial for reducing unnecessary emergency department utilization and mitigating acute hospitalization costs. 
+
+This technical report evaluates clinical access metrics and behavioral health predictors using the **Behavioral Risk Factor Surveillance System (BRFSS)** dataset. The study is split into two strategic layers:
+1. **Descriptive & Operational Profile Analytics:** Benchmarking regional demographic variances, caregiver burdens, and mental health baselines.
+2. **Predictive Modeling Frameworks:** Utilizing linear and logistic regression models to understand systemic drivers behind behavioral health variations and primary care provider (PCP) establishment.
+
+---
+
+## 2. Advanced Feature Engineering & Pipeline Construction
+The raw BRFSS microdata contains localized survey responses that include complex placeholder codes for missing responses, refusals, and categorical anomalies. The unified pipeline below ingests `BRFSS2015_650.csv`, maps placeholders to standard values, filters out refusals, and enforces proper data types for mathematical handling.
+
+```{#r data-ingestion-and-cleaning}
+library(tidyverse)
+library(lm.beta)
+library(Hmisc)
+
+# Ingest raw BRFSS dataset
+brf_raw <- read_csv("BRFSS2015_650.csv")
+
+# 1. Base Structural Processing (Part 1 Variables)
+brf_processed <- brf_raw %>%
+  rename(STATE = `_STATE`) %>%
+  mutate(
+    # Recode MENTHLTH: Code 88 means "Zero days of poor mental health"
+    MENTHLTH_CLEAN = case_when(
+      MENTHLTH == 88 ~ 0,
+      MENTHLTH <= 30 ~ MENTHLTH,
+      TRUE           ~ NA_real_
+    )
+  )
+
+# 2. Predictive Pipeline Framework (Part 2 Core Features)
+# Decoding clinical survey values into actionable mathematical variables
+model_pipeline_base <- brf_raw %>%
+  select(POORHLTH, MAXDRNKS, SMOKE100, PERSDOC2) %>%
+  mutate(
+    # POORHLTH: Map 88 (None) to 0 days, treat 1-30 directly, filter out 77, 99
+    POORHLTH = case_when(
+      POORHLTH == 88                 ~ 0,
+      POORHLTH >= 1 & POORHLTH <= 30 ~ POORHLTH,
+      TRUE                           ~ NA_real_
+    ),
+    # MAXDRNKS: Keep 1-76 drinks, treat 77, 99 as NA
+    MAXDRNKS = case_when(
+      MAXDRNKS >= 1 & MAXDRNKS <= 76 ~ MAXDRNKS,
+      TRUE                           ~ NA_real_
+    ),
+    # SMOKE100: Map 1 -> 1 (Yes), 2 -> 0 (No), convert to factor
+    SMOKE100 = case_when(
+      SMOKE100 == 1 ~ 1,
+      SMOKE100 == 2 ~ 0,
+      TRUE          ~ NA_real_
+    ),
+    SMOKE100 = factor(SMOKE100, levels = c(0, 1), labels = c("No", "Yes")),
+    
+    # PERSDOC2 (Outcome): Primary Care Health Provider (1,2 -> 1 (Yes); 3 -> 0 (No))
+    PERSDOC2 = case_when(
+      PERSDOC2 %in% c(1, 2) ~ 1,
+      PERSDOC2 == 3        ~ 0,
+      TRUE                 ~ NA_real_
+    )
+  )
+```
+
+---
+
+## 3. Operational Analytics & Metric Benchmarking
+
+### 3.1 Patient Access & Regional Profiles
+To evaluate baseline health and specialized care cohorts across geographical landscapes, we calculated categorical distributions and regional clinical targets.
+
+```{#r health-demographics}
+# General Health Inquiries
+excellent_health_count <- brf_processed %>%
+  filter(GENHLTH == 1) %>%
+  nrow()
+
+# Regional Diabetes Profiling (Pennsylvania Focus)
+pa_diab_median_age <- brf_processed %>% 
+  filter(STATE == 42) %>% # Pennsylvania FIPS code
+  summarise(med_diab_age = median(DIABAGE2, na.rm = TRUE)) %>%
+  pull(med_diab_age)
+```
+
+*   **System Metric - General Wellness:** A total of **`r format(excellent_health_count, big.mark=",")`** patients surveyed reported their general health status as "Excellent".
+*   **Pennsylvania Clinical Target:** The median age of diabetes diagnosis for respondents residing in Pennsylvania was established at **`r pa_diab_median_age` years**.
+
+### 3.2 Caregiver Support Systems Evaluation
+Managing acute care logistics (such as tracking medication, feeding, or bathing) places an immense behavioral burden on informal caregivers. We evaluated the variance and mean days of reported poor mental health among active caregivers versus non-caregivers.
+
+```{#r caregiver-analysis}
+caregiver_summary <- brf_processed %>%
+  select(CRGVPERS, MENTHLTH_CLEAN) %>%
+  filter(CRGVPERS %in% c(1, 2)) %>%
+  group_by(CRGVPERS) %>% 
+  summarise(
+    mean_mental = round(mean(MENTHLTH_CLEAN, na.rm = TRUE), 2),
+    sd_mental = round(sd(MENTHLTH_CLEAN, na.rm = TRUE), 2)
+  )
+
+knitr::kable(caregiver_summary, col.names = c("Caregiver Status (1=Yes, 2=No)", "Mean Poor Mental Health Days", "Standard Deviation"))
+```
+
+---
+
+## 4. Advanced Outlier Mitigation Strategy
+In healthcare analytics, choosing an outlier mitigation rule requires strict alignment with the underlying data distribution. We evaluate and apply customized rules for our clinical variables:
+
+*   **POORHLTH (3SD Rule):** Standard 1.5x IQR filters strip away over 25% of observations because health days are heavily right-skewed (most individuals report 0 days). We deploy a 3SD-equivalent quantile method (0.15th to 99.85th percentiles) to remain resistant while preserving critical patient risk profiles.
+*   **MAXDRNKS (1.5x IQR Rule):** Because acute drinking behavior clusters heavily on the lower numerical end, the 1.5x IQR upper fence is highly effective at filtering out extreme values that would disrupt model variance.
+
+```{#r outlier-handling}
+# Initial Row Count
+raw_count <- nrow(model_pipeline_base)
+
+# Step A: Apply 3SD boundaries to POORHLTH
+ph_lower <- quantile(model_pipeline_base$POORHLTH, 0.0015, na.rm = TRUE)
+ph_upper <- quantile(model_pipeline_base$POORHLTH, 0.9985, na.rm = TRUE)
+
+pipeline_filtered_ph <- model_pipeline_base %>%
+  filter(POORHLTH >= ph_lower, POORHLTH <= ph_upper)
+
+# Step B: Apply 1.5x IQR boundaries to MAXDRNKS
+drinks_upper <- quantile(pipeline_filtered_ph$MAXDRNKS, 0.75, na.rm = TRUE) + 
+                (1.5 * IQR(pipeline_filtered_ph$MAXDRNKS, na.rm = TRUE))
+drinks_lower <- quantile(pipeline_filtered_ph$MAXDRNKS, 0.25, na.rm = TRUE) - 
+                (1.5 * IQR(pipeline_filtered_ph$MAXDRNKS, na.rm = TRUE))
+
+final_modeled_data <- pipeline_filtered_ph %>%
+  filter(MAXDRNKS >= drinks_lower, MAXDRNKS <= drinks_upper) %>%
+  drop_na() # Complete cases for robust modeling
+
+post_clean_count <- nrow(final_modeled_data)
+```
+
+*   **Pipeline Filtering Summary:** The final optimized data pool contains **`r format(post_clean_count, big.mark=",")`** complete records (filtered down from an initial `r format(raw_count, big.mark=",")` records), ensuring full integrity for downstream regression.
+
+---
+
+## 5. Exploratory Data Analysis & Visualizations
+To confirm that data bounds are properly aligned post-cleaning, we look at the distributions of our cleaned metrics.
+
+### 5.1 Distribution Profiles: Health Constraints & Alcohol Consumption
+```{#r eda-plots-quantitative, fig.width=10, fig.height=4}
+# Combine distribution visuals for quick scannability
+p1 <- final_modeled_data %>%
+  ggplot(aes(x = POORHLTH)) +
+  geom_histogram(fill = "steelblue", color = "white", bins = 15) +
+  theme_minimal() +
+  labs(title = "Cleaned Distribution of Poor Health Days", x = "Days", y = "Count")
+
+p2 := final_modeled_data %>%
+  ggplot(aes(x = MAXDRNKS)) +
+  geom_histogram(fill = "gray40", color = "white", binwidth = 0.5) +
+  theme_minimal() +
+  labs(title = "Cleaned Distribution of Largest Alcohol Volume", x = "Drinks", y = "Count")
+
+library(gridExtra)
+grid.arrange(p1, p2, ncol = 2)
+```
+
+### 5.2 Patient Access Baseline Distributions
+```{#r eda-plots-categorical, fig.width=5, fig.height=4}
+final_modeled_data %>%
+  ggplot(aes(x = factor(PERSDOC2, labels = c("No PCP", "Has PCP")))) +
+  geom_bar(fill = "darkred", alpha = 0.8, width = 0.6) +
+  theme_minimal() +
+  labs(title = "Primary Care Provider Alignment Status", x = "Alignment Status", y = "Patient Count")
+```
+
+---
+
+## 6. Statistical Modeling & Predictive Diagnostics
+
+### 6.1 Linear Regression: Marital Status as a Predictor of Mental Health Elasticity
+To look at social determinants of behavioral health, a linear baseline model was trained to predict poor mental health days based on raw relational classifications.
+
+```{#r marital-linear-model}
+linear_data <- brf_processed %>%
+  select(MENTHLTH_CLEAN, MARITAL) %>%
+  filter(!is.na(MENTHLTH_CLEAN), MARITAL != 9) %>%
+  mutate(MARITAL = as.factor(MARITAL))
+
+linear_fit <- lm(MENTHLTH_CLEAN ~ MARITAL, data = linear_data)
+summary(linear_fit)
+```
+
+### 6.2 Healthcare Access: Logistic Risk Modeling for Primary Care Optimization
+To give healthcare managers a transparent, auditable decision mechanism, we execute a binary Logistic Regression. This models the probability of a patient establishing a primary care relationship based on acute physical health constraints (`POORHLTH`), regular tobacco exposure (`SMOKE100`), and alcohol consumption volume (`MAXDRNKS`).
+
+```{#r healthcare-access-logistic-model}
+logistic_fit <- glm(PERSDOC2 ~ POORHLTH + MAXDRNKS + SMOKE100, 
+                    data = final_modeled_data,
+                    family = binomial)
+
+
+ 
