@@ -25,8 +25,9 @@ This project delivers an end-to-end data pipeline and predictive modeling framew
 *   *Key Finding:* [Insert a quick 1-sentence insight here later, e.g., "Patients reporting 'Poor' general health combined with a history of diabetes showed a 3x higher likelihood of readmission."]
 
 ### 3. Predictive Modeling & Evaluation
-*   Developed and tuned predictive models (e.g., Logistic Regression / Random Forest) to classify readmission risk.
-*   Evaluated performance using **AUC-ROC**, **Sensitivity (Recall)**, and **Precision** to ensure the model catches individuals with a higher likelihood of hospital readmission. 
+*   **Methodology:** Deployed **Logistic Regression** for the binary classification of 30-day readmissions, and **Linear Regression** to analyze continuous operational metrics [e.g., length of stay, if applicable].
+*   **Clinical Interpretability:** Selected regression-based frameworks over complex "black-box" models to ensure full interpretability of feature weights (Odds Ratios). This allows hospital stakeholders to transparently audit exactly which risk factors (such as chronic comorbidities or demographic elements) are driving the risk scores.
+
 
 ---
 
