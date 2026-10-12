@@ -29,25 +29,21 @@ This technical report evaluates clinical access metrics and behavioral health pr
 ## 2. Advanced Feature Engineering & Pipeline Construction
 The raw BRFSS microdata contains localized survey responses that include complex placeholder codes for missing responses, refusals, and categorical anomalies. The unified pipeline below ingests `BRFSS2015_650.csv`, maps placeholders to standard values, filters out refusals, and enforces proper data types for mathematical handling.
 
-```{#r data-ingestion-and-cleaning}
+```{r data-ingestion-and-cleaning}
 library(tidyverse)
 library(lm.beta)
 library(Hmisc)
 
-# Ingest raw BRFSS dataset
+# Ingest dataset and compute metrics early
 brf_raw <- read_csv("BRFSS2015_650.csv")
-
-# 1. Base Structural Processing (Part 1 Variables)
 brf_processed <- brf_raw %>%
   rename(STATE = `_STATE`) %>%
-  mutate(
-    # Recode MENTHLTH: Code 88 means "Zero days of poor mental health"
-    MENTHLTH_CLEAN = case_when(
-      MENTHLTH == 88 ~ 0,
-      MENTHLTH <= 30 ~ MENTHLTH,
-      TRUE           ~ NA_real_
-    )
-  )
+  mutate(MENTHLTH_CLEAN = case_when(MENTHLTH == 88 ~ 0, MENTHLTH <= 30 ~ MENTHLTH, TRUE ~ NA_real_))
+
+excellent_health_count <- brf_processed %>% filter(GENHLTH == 1) %>% nrow()
+pa_diab_median_age <- brf_processed %>% filter(STATE == 42) %>% summarise(med_diab_age = median(DIABAGE2, na.rm = TRUE)) %>% pull(med_diab_age)
+```
+
 
 # 2. Predictive Pipeline Framework (Part 2 Core Features)
 # Decoding clinical survey values into actionable mathematical variables
