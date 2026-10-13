@@ -88,7 +88,7 @@ model_pipeline_base <- brf_raw %>%
 ### 3.1 Patient Access & Regional Profiles
 To evaluate baseline health and specialized care cohorts across geographical landscapes, we calculated categorical distributions and regional clinical targets.
 
-```{#r health-demographics}
+```{r health-demographics}
 # General Health Inquiries
 excellent_health_count <- brf_processed %>%
   filter(GENHLTH == 1) %>%
@@ -101,8 +101,8 @@ pa_diab_median_age <- brf_processed %>%
   pull(med_diab_age)
 ```
 
-*   **System Metric - General Wellness:** A total of **`r format(excellent_health_count, big.mark=",")`** patients surveyed reported their general health status as "Excellent".
-*   **Pennsylvania Clinical Target:** The median age of diabetes diagnosis for respondents residing in Pennsylvania was established at **`r pa_diab_median_age` years**.
+*   **System Metric - General Wellness:** A total of `r format(excellent_health_count, big.mark=",")`patients surveyed reported their general health status as "Excellent".
+*   **Pennsylvania Clinical Target:** The median age of diabetes diagnosis for respondents residing in Pennsylvania was established at `r pa_diab_median_age` years.
 
 ### 3.2 Caregiver Support Systems Evaluation
 Managing acute care logistics (such as tracking medication, feeding, or bathing) places an immense behavioral burden on informal caregivers. We evaluated the variance and mean days of reported poor mental health among active caregivers versus non-caregivers.
