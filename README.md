@@ -19,4 +19,4 @@ In my [BRFSS report](index.qmd), I use data from the CDC’s 2015 Behavioral Ris
 
 ## Contact
 
-[Find me on GitHub](https://github.com/edlyn-codes)
+For questions about my projects or to discuss analytics opportunities, email me at [predlynn@gmail.com](mailto:predlynn@gmail.com).
